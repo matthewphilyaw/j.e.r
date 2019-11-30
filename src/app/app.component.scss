@@ -1,0 +1,13 @@
+@import '../variables.scss';
+
+:host {
+    display: block;
+    --ui-primary-color: var(--primary-color);
+    --ui-background-color: var(--background-color);
+
+    --ui-on-primary-color: var(--on-primary-color);
+    --ui-on-background-color: var(--on-background-color);
+
+    --ui-blade-height: 1.5rem;
+    --ui-handle-height: calc(var(--ui-blade-height) / 1.75);
+}

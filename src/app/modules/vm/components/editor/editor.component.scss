@@ -1,0 +1,17 @@
+:host {
+    display: flex;
+    flex-direction: column;
+}
+
+.pane {
+    height: 100%;
+    width: 100%;
+}
+
+.space-bottom {
+    margin-bottom: .25em;
+}
+
+.space-top {
+    margin-top: .25em;
+}

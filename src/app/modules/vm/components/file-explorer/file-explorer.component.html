@@ -1,0 +1,34 @@
+<ui-handle hdir="left"
+           vdir="top">
+  <span title>Files</span>         
+</ui-handle>
+<div class="explorer">
+  <button class="explorer__btn-success" (click)="createFile()">
+    <svg class="explorer__icon">
+      <use xlink:href="assets/open-iconic.min.svg#plus" class="icon-plus-sign"></use>
+    </svg>
+  </button>
+  <ul>
+    <li *ngFor="let file of files"
+        [class.active]="file.id === activeFileId"
+        class="explorer__item">
+
+      <button class="explorer__item-content"
+           (click)="activateFile(file.id)">
+        <svg class="explorer__icon">
+          <use xlink:href="assets/open-iconic.min.svg#file" class="icon-close"></use>
+        </svg>
+        <span class="left-margin">{{file.name}}</span>
+      </button>
+
+      <div>
+        <button class="explorer__btn-danger" (click)="deleteFile(file.id)">
+          <svg class="explorer__icon left-margin">
+            <use xlink:href="assets/open-iconic.min.svg#x" class="icon-close"></use>
+          </svg>
+        </button>
+      </div>
+
+    </li>
+  </ul>
+</div>

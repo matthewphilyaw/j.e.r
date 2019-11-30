@@ -1,0 +1,80 @@
+@import '../../../../../variables.scss';
+
+:host {
+    display: grid;
+
+    grid-template-rows: var(--ui-blade-height) auto var(--ui-blade-height);
+    grid-template-areas: "handle"
+                         "explorer"
+                         "footer";
+    
+}
+
+.header {
+    grid-area: header;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: .2em;
+}
+
+.explorer {
+    grid-area: explorer;
+    overflow-y: auto;
+    background-color: darken($primary-color, 30%);
+    cursor: pointer;
+    margin-right: .5em;
+}
+
+.explorer__item {
+    padding: .1em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.explorer__item.active {
+    background-color: darken($primary-color, 10%);
+}
+
+.explorer__item:hover {
+    background-color: lighten($primary-color, 20%);
+    color: $font-color;
+}
+
+.explorer__item-content {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: .1em;
+    font-size: .75em;
+    cursor: pointer;
+}
+
+.explorer__item-content:hover {
+    fill: $font-color;
+}
+
+.explorer__icon {
+    height: 1em;
+    width: 1em;
+}
+
+.explorer__btn-success {
+   fill: $action-success;
+}
+
+.explorer__btn-success:hover {
+   fill: lighten($action-success, 10%);
+   cursor: pointer;
+}
+
+.explorer__btn-danger {
+   fill: $action-danger;
+}
+
+.explorer__btn-danger:hover {
+   fill: lighten($action-danger, 10%);
+   cursor: pointer;
+}

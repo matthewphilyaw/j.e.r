@@ -1,0 +1,21 @@
+.blade {
+    background-color: var(--ui-primary-color);
+    color: var(--ui-on-primary-color);
+    height: var(--ui-blade-height);
+}
+
+.blade__corner-top-right {
+    border-radius: var(--ui-blade-height) 0 0 0 ;
+}
+
+.blade__corner-top-left {
+    border-radius: 0 var(--ui-blade-height) 0 0 ;
+}
+
+.blade__corner-bottom-right {
+    border-radius: 0 0 0 var(--ui-blade-height);
+}
+
+.blade__corner-bottom-left {
+    border-radius: 0 0 var(--ui-blade-height) 0;
+}

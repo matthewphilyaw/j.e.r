@@ -1,0 +1,12 @@
+<div class="handle"
+     [class.handle__reverse]="this.hdir === 'right'">
+  <div [ngClass]="this.handleBarClasses">
+    <div class="handle__text">
+      <ng-content select="[title]"></ng-content>
+    </div>
+  </div>
+  <div class="handle__transition">
+    <div [ngClass]="this.handleTransitionCornerClasses">
+    </div>
+  </div>
+</div>

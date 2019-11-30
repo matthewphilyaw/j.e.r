@@ -1,0 +1,27 @@
+:host {
+    display: grid;
+    grid-template-columns: .15fr .50fr .35fr;
+    grid-template-areas: "file-explorer editor vm";
+
+    height: 100vh;
+    padding: 0.5em;
+}
+
+.file-explorer {
+    grid-area: file-explorer;
+}
+
+.editor {
+    grid-area: editor;
+    display: flex;
+}
+
+.vm {
+    grid-area: vm;
+
+    display: grid;
+    grid-template-rows: var(--ui-blade-height) auto var(--ui-blade-height);
+    grid-template-areas: "top"
+                         "content"
+                         "handle";
+}

@@ -1,0 +1,97 @@
+.handle {
+    display: flex;
+}
+
+.handle__bar {
+    height: var(--ui-handle-height);
+    background-color: var(--ui-primary-color);
+    color: var(--ui-on-primary-color);
+    display: flex;
+    flex: 1;
+}
+
+.handle__reverse {
+    flex-direction: row-reverse;
+}
+
+.handle__cap-left {
+    border-radius: .5em 0 0 .5em;
+}
+
+.handle__cap-right {
+    border-radius: 0 .5em .5em 0;
+}
+
+.handle__text-space-left {
+    padding-left: 2em;
+}
+
+.handle__text-space-right  {
+    justify-content: flex-end;
+    padding-right: 2em;
+}
+
+.handle__text {
+    height: var(--ui-handle-height);
+    background-color: var(--ui-background-color);
+    color: var(--ui-on-background-color);
+    font-size: var(--ui-handle-height);
+    font-weight: 500;
+    padding-left: .5em;
+    padding-right: .5em;
+}
+
+.handle__text:empty {
+    background-color: var(--ui-primary-color);
+    color: var(--ui-on-primary-color);
+    padding: 0;
+
+}
+
+.handle__transition {
+    height: var(--ui-blade-height);
+    background-color: var(--ui-primary-color);
+    color: var(--ui-on-primary-color);
+}
+
+.handle__transition-inside-corner {
+    background-color: var(--ui-background-color);
+    height: calc(var(--ui-blade-height) - var(--ui-handle-height));
+    width: var(--ui-handle-height);
+}
+
+.handle__transition-top {
+    margin-top: var(--ui-handle-height);
+}
+
+.handle__transition-bottom {
+    margin-bottom: calc(var(--ui-blade-height) - var(--ui-handle-height));
+}
+
+/* 
+    The transition radii position is not the position of the radius
+    but rather the general direction of the handle.
+
+    ex: a top left bar needs a top-right radius so top-left
+        in these classes produce a top-right radious buy marked .handle__transition-rad-top-left
+        to make the component code more straight forward
+*/
+.handle__transition-rad-top-left {
+    border-radius: 0 var(--ui-handle-height) 0 0;
+}
+
+.handle__transition-rad-top-right {
+    border-radius: var(--ui-handle-height) 0 0 0;
+}
+
+.handle__transition-rad-bottom-left {
+    border-radius: 0 0 var(--ui-handle-height) 0;
+}
+
+.handle__transition-rad-bottom-right {
+    border-radius: 0 0 0 var(--ui-handle-height);
+}
+
+.handle__pull-bottom {
+    align-self: flex-end;
+}
