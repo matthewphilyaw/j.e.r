@@ -1,8 +1,23 @@
 <div class="handle"
      [class.handle__reverse]="this.hdir === 'right'">
   <div [ngClass]="this.handleBarClasses">
-    <div class="handle__text">
-      <ng-content select="[title]"></ng-content>
+    <div *ngIf="this.title"
+         class="handle__text">
+      <div class="handle__seperator"></div>
+      <span>{{this.title}}</span>
+      <div class="handle__seperator"></div>
+      <div class="handle__seperator-button"></div>
+    </div>
+    <div *ngIf="this.buttons"
+         class="handle__button-area">
+      <div class="handle__seperator"></div>
+      <ng-container *ngFor="let b of this.buttons">
+        <button class="handle__button"
+                (click)="this.buttonClicked(b.id)">
+          {{ b.name }}
+        </button>
+        <div class="handle__seperator"></div>
+      </ng-container>
     </div>
   </div>
   <div class="handle__transition">

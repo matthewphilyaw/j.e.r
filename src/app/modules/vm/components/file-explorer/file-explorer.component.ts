@@ -43,10 +43,12 @@ export class FileExplorerComponent implements OnInit {
     console.log(fileId);
   }
 
-  createFile() {
-    this.files.push({
-      id: (this.files.length + 1).toString(),
-      name: 'NewFile'
-    });
+  handleButton(event: string) {
+    if (event.toLowerCase() === 'add-file') {
+      this.files.push({
+        id: (this.files.length + 1).toString(),
+        name: 'NewFile'
+      });
+    }
   }
 }

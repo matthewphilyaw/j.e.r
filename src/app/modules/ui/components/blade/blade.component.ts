@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { validHDirs, validVDirs, attributeOutOfRange } from '../../common/ui-utility';
+import { validHDirs, validVDirs, attributeOutOfRange } from '../../common/ui.utility';
 
 
 @Component({

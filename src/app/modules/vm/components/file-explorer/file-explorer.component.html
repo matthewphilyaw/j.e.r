@@ -1,34 +1,50 @@
-<ui-handle hdir="left"
-           vdir="top">
-  <span title>Files</span>         
-</ui-handle>
+<ui-handle title="Files"
+           hdir="left"
+           vdir="top"></ui-handle>
 <div class="explorer">
-  <button class="explorer__btn-success" (click)="createFile()">
-    <svg class="explorer__icon">
-      <use xlink:href="assets/open-iconic.min.svg#plus" class="icon-plus-sign"></use>
-    </svg>
-  </button>
-  <ul>
-    <li *ngFor="let file of files"
-        [class.active]="file.id === activeFileId"
-        class="explorer__item">
+  <div class="explorer__row explorer__header">
+    <ui-blade  class="explorer__gutter"
+               hdir="right"
+               vdir="top"></ui-blade>
+    <ui-handle class="explorer__content"
+               hdir="right"
+               vdir="top"
+               [buttons]="[
+                { name: 'add', id: 'add-file' }
+               ]"
+               (buttonClickedEvent)="this.handleButton($event)"></ui-handle>
+  </div>
+  <div class="explorer__row explorer__row-expand">
+    <div class="explorer__gutter explorer__gutter-fill"></div>
+    <ul class="explorer__items explorer__content">
+      <li *ngFor="let file of files"
+          [class.active]="file.id === activeFileId"
+          class="explorer__item">
 
-      <button class="explorer__item-content"
-           (click)="activateFile(file.id)">
-        <svg class="explorer__icon">
-          <use xlink:href="assets/open-iconic.min.svg#file" class="icon-close"></use>
-        </svg>
-        <span class="left-margin">{{file.name}}</span>
-      </button>
-
-      <div>
-        <button class="explorer__btn-danger" (click)="deleteFile(file.id)">
-          <svg class="explorer__icon left-margin">
-            <use xlink:href="assets/open-iconic.min.svg#x" class="icon-close"></use>
+        <button class="explorer__item-content"
+             (click)="activateFile(file.id)">
+          <svg class="explorer__icon">
+            <use xlink:href="assets/open-iconic.min.svg#file" class="icon-close"></use>
           </svg>
+          <span class="left-margin">{{file.name}}</span>
         </button>
-      </div>
 
-    </li>
-  </ul>
+        <div>
+          <button class="explorer__btn-danger" (click)="deleteFile(file.id)">
+            <svg class="explorer__icon left-margin">
+              <use xlink:href="assets/open-iconic.min.svg#x" class="icon-close"></use>
+            </svg>
+          </button>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div class="explorer__row">
+    <ui-blade  class="explorer__gutter"
+               hdir="right"
+               vdir="bottom"></ui-blade>
+    <ui-handle class="explorer__content"
+               hdir="right"
+               vdir="bottom"></ui-handle>
+  </div>
 </div>

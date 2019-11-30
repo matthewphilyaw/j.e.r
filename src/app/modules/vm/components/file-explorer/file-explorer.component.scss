@@ -3,27 +3,78 @@
 :host {
     display: grid;
 
-    grid-template-rows: var(--ui-blade-height) auto var(--ui-blade-height);
+    grid-template-rows: var(--ui-blade-height)
+                        auto
+                        var(--ui-blade-height);
     grid-template-areas: "handle"
                          "explorer"
                          "footer";
-    
-}
-
-.header {
-    grid-area: header;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: .2em;
 }
 
 .explorer {
+    --ui-blade-height: 1.25rem;
+    --ui-handle-height: calc(var(--ui-blade-height) / 2);
+    --ui-handle-cap-rad: .1rem;
+
+    --ui-primary-color: var(--secondary-color);
+    --ui-on-primary-color: var(--on-secondary-color);
+    --ui-secondary-color: var(--primary-color);
+    --ui-on-secondary-color: var(--on-primary-color);
+
     grid-area: explorer;
+
+    display: flex;
+    flex-direction: column;
+    margin-right: .75em;
+}
+
+.explorer__header {
+    --ui-blade-height: 1.5rem;
+    --ui-handle-height: calc(var(--ui-blade-height) / 1.5);
+
+}
+
+.explorer__row {
+    display: flex;
+}
+
+.explorer__row-expand {
+    flex: 1;
+}
+
+.explorer__gutter {
+    flex: .05;
+}
+
+.explorer__gutter-fill {
+    background-color: var(--primary-color);
+    margin-top: .2rem;
+    margin-bottom: .2rem;
+}
+
+.explorer__content {
+    --ui-background-color: var(--surface-color);
+    --ui-on-background-color: var(--on-surface-color);
+    background-color: var(--surface-color);
+    color: var(--on-surface-color);
+    flex: 1;
+}
+
+.explorer__content-header {
+    grid-area: header;
+}
+
+.explorer__content-body {
+    grid-area: body;
+}
+
+.explorer__content-footer {
+    grid-area: footer;
+}
+
+.explorer__items {
     overflow-y: auto;
-    background-color: darken($primary-color, 30%);
     cursor: pointer;
-    margin-right: .5em;
 }
 
 .explorer__item {

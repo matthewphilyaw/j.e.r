@@ -1,6 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { validHDirs, validVDirs, attributeOutOfRange } from '../../common/ui-utility';
-
+import { Component, OnInit, Input, EventEmitter, ElementRef, Output } from '@angular/core';
+import { validHDirs, validVDirs, attributeOutOfRange } from '../../common/ui.utility';
+import { UiButton } from '../../common/ui.button';
 
 @Component({
   selector: 'ui-handle',
@@ -8,8 +8,12 @@ import { validHDirs, validVDirs, attributeOutOfRange } from '../../common/ui-uti
   styleUrls: ['./handle.component.scss']
 })
 export class HandleComponent implements OnInit {
+  @Input() title: string;
   @Input() hdir: string = 'left';
   @Input() vdir: string = 'top';
+  @Input() buttons: UiButton[];
+
+  @Output() buttonClickedEvent = new EventEmitter<string>();
 
   private _handleBarClasses: string[] = [];
   private _handleTransitionCornerClasses: string[] = [];
@@ -38,6 +42,10 @@ export class HandleComponent implements OnInit {
 
     this.buildHandleBarClasses();
     this.buildHandleTransitionCornerClasses();
+  }
+
+  protected buttonClicked(id: string) {
+    this.buttonClickedEvent.emit(id);
   }
 
   private buildHandleBarClasses() {

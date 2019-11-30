@@ -3,11 +3,17 @@
 :host {
     display: block;
     --ui-primary-color: var(--primary-color);
+    --ui-secondary-color: var(--secondary-color);
     --ui-background-color: var(--background-color);
 
     --ui-on-primary-color: var(--on-primary-color);
+    --ui-on-secondary-color: var(--on-secondary-color);
     --ui-on-background-color: var(--on-background-color);
 
-    --ui-blade-height: 1.5rem;
+    --ui-blade-height: 2rem;
     --ui-handle-height: calc(var(--ui-blade-height) / 1.75);
+    --ui-handle-cap-rad: .2rem;
+    --ui-handle-title-pad: 2rem;
+    --ui-seperator-width: .25rem;
+    --ui-handle-title-button-spacing: 2rem;
 }

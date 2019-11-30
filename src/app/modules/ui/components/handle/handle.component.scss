@@ -1,5 +1,6 @@
 .handle {
     display: flex;
+    background-color: var(--ui-background-color);
 }
 
 .handle__bar {
@@ -15,20 +16,34 @@
 }
 
 .handle__cap-left {
-    border-radius: .5em 0 0 .5em;
+    border-radius: var(--ui-handle-cap-rad) 0 0 var(--ui-handle-cap-rad);
 }
 
 .handle__cap-right {
-    border-radius: 0 .5em .5em 0;
+    border-radius: 0 var(--ui-handle-cap-rad) var(--ui-handle-cap-rad) 0;
 }
 
 .handle__text-space-left {
-    padding-left: 2em;
+    padding-left: var(--ui-handle-title-pad);
+}
+
+.handle__seperator {
+    background-color: var(--ui-background-color);
+    color: var(--ui-on-background-color);
+    width: var(--ui-seperator-width);
+    height: var(--ui-handle-height);
+}
+
+.handle__seperator-button {
+    background-color: var(--ui-primary-color);
+    color: var(--ui-on-primary-color);
+    width: var(--ui-handle-title-button-spacing);
+    height: var(--ui-handle-height);
 }
 
 .handle__text-space-right  {
     justify-content: flex-end;
-    padding-right: 2em;
+    padding-right: var(--ui-handle-title-pad);
 }
 
 .handle__text {
@@ -37,8 +52,31 @@
     color: var(--ui-on-background-color);
     font-size: var(--ui-handle-height);
     font-weight: 500;
-    padding-left: .5em;
-    padding-right: .5em;
+    display: flex;
+}
+
+.handle__button-area {
+    display: flex;
+    background-color: var(--ui-background-color);
+    color: var(--ui-on-background-color);
+    cursor: pointer;
+}
+
+.handle__button {
+    background-color: var(--ui-primary-color);
+    color: var(--ui-on-primary-color);
+    font-size: calc(var(--ui-handle-height) * .75);
+    padding-top: .1em;
+    padding-left: .2rem;
+    padding-right: .2rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-bottom: .11em solid transparent;
+}
+
+.handle__button:hover {
+    cursor: pointer;
+    border-bottom: .11em solid var(--ui-secondary-color);
 }
 
 .handle__text:empty {
