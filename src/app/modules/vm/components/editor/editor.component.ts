@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import {  EditorFromTextArea, fromTextArea } from 'codemirror';
 
-import "monaco-editor/esm/vs/editor/browser/controller/coreCommands.js";
-import "monaco-editor/esm/vs/editor/contrib/find/findController.js";
-import * as monaco from "monaco-editor/esm/vs/editor/editor.api.js";
-import "monaco-editor/esm/vs/basic-languages/mips/mips.contribution.js";
+import 'codemirror/mode/javascript/javascript';
+import 'codemirror/keymap/vim';
+
 
 @Component({
   selector: 'app-editor',
@@ -13,7 +13,7 @@ import "monaco-editor/esm/vs/basic-languages/mips/mips.contribution.js";
 export class EditorComponent implements OnInit {
 
   @ViewChild('editorPane', { static: false }) editorRef: ElementRef;
-  editor: monaco.editor.IStandaloneCodeEditor;
+  editor: EditorFromTextArea;
 
   constructor() { }
 
@@ -21,13 +21,16 @@ export class EditorComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.editor = monaco.editor.create(this.editorRef.nativeElement, {
-      theme: 'vs-dark',
-      language: 'mips',
-      glyphMargin: true
-    });
+    this.editor = fromTextArea(
+      this.editorRef.nativeElement,
+      {
+        lineNumbers: true,
+        mode: 'javascript',
+        theme: 'blackboard',
+        keyMap: 'vim'
+
+      });
 
     this.editor.setValue(['.test', 'li'].join('\n'));
-
   }
 }

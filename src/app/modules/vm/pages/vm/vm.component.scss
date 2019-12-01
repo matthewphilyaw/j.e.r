@@ -1,6 +1,6 @@
 :host {
     display: grid;
-    grid-template-columns: .20fr .50fr .30fr;
+    grid-template-columns: 250px var(--editor-width) auto;
     grid-template-areas: "file-explorer editor vm";
 
     height: 100vh;

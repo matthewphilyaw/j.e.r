@@ -1,11 +1,13 @@
 @import 'variables.scss';
 @import url('https://fonts.googleapis.com/css?family=Space+Mono|Work+Sans:400,500,700&display=swap');
-@import '~monaco-editor/min/vs/editor/editor.main';
+@import "~codemirror/lib/codemirror";
+@import "~codemirror/theme/blackboard";
+
 
 :root {
     --primary-color: #DF2935;
     --secondary-color: #4B3BF7;
-    --surface-color: #04052A;
+    --surface-color: #0b0f21;
     --background-color:#02010A;
     --error-color: #DF2935;
 
@@ -14,6 +16,8 @@
     --on-surface-color: #ffffff;
     --on-background-color: #ffffff;
     --on-error-color: #ffffff;
+
+    --editor-width: 550px;
 }
 
 html, body, div, span, object, iframe,
@@ -160,4 +164,9 @@ h4 {
 
 .right-margin {
     margin-right: .2em;
+}
+
+.CodeMirror {
+    flex: 1;
+    width: var(--editor-width);
 }
