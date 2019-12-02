@@ -1,7 +1,6 @@
 @import '../variables.scss';
 
 :host {
-    display: block;
     --ui-primary-color: var(--primary-color);
     --ui-secondary-color: var(--secondary-color);
     --ui-background-color: var(--background-color);
@@ -15,5 +14,14 @@
     --ui-handle-cap-rad: .2rem;
     --ui-handle-title-pad: 2rem;
     --ui-seperator-width: .25rem;
-    --ui-handle-title-button-spacing: 2rem;
+    --ui-handle-title-button-spacing: .5rem;
+
+    height: 100vh;
+    padding: .25em;
+    display: flex;
+    flex-direction: column;
+}
+
+.expand {
+    flex: 1;
 }
