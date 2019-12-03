@@ -1,8 +1,9 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
 import {  EditorFromTextArea, fromTextArea } from 'codemirror';
 
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/keymap/vim';
+import { UiCommand, UiCommandStyle } from 'src/app/modules/ui/ui.module';
 
 
 @Component({
@@ -14,6 +15,11 @@ export class EditorComponent implements OnInit {
 
   @ViewChild('editorPane', { static: false }) editorRef: ElementRef;
   editor: EditorFromTextArea;
+
+  public commands: UiCommand[] = [
+    { name: 'save', id: 'save-file', style: UiCommandStyle.U1 },
+    { name: 'del', id: 'del-file', style: UiCommandStyle.U3 },
+  ];
 
   constructor() { }
 

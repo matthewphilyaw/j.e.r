@@ -1,1 +1,14 @@
-<div [ngClass]="this.bladeClasses"></div>
+<div [ngClass]="this.bladeClasses"
+     [class.blade__reverse]="this.reverse">
+  <div *ngIf="this.title"
+      class="blade__text">
+   <div class="blade__seperator"></div>
+   <span>{{this.title}}</span>
+   <div class="blade__seperator"></div>
+  </div>
+  <ui-cmd-bar *ngIf="this.commands"
+              layout="horizontal"
+              [commands]="this.commands"
+              (commandClickedEvent)="this.commandClicked($event)"></ui-cmd-bar>
+
+</div>

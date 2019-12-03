@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { validHDirs, validVDirs, attributeOutOfRange } from '../../common/ui.utility';
+import { validHDirs, validVDirs, attributeOutOfRange, validVDir, validHDir } from '../../common/ui.utility';
+import { UiCommandBar } from '../../common/ui.command.bar';
 
 
 @Component({
@@ -7,9 +8,12 @@ import { validHDirs, validVDirs, attributeOutOfRange } from '../../common/ui.uti
   templateUrl: './blade.component.html',
   styleUrls: ['./blade.component.scss']
 })
-export class BladeComponent implements OnInit {
+export class BladeComponent extends UiCommandBar implements OnInit {
   @Input() hdir: string = 'left';
   @Input() vdir: string = 'top';
+  @Input() reverse: boolean = false;
+
+  @Input() title: string;
 
   private _bladeClasses: string[] = [];
 
@@ -17,17 +21,16 @@ export class BladeComponent implements OnInit {
     return this._bladeClasses;
   }
 
-  constructor() { }
+  constructor() { 
+    super();
+  }
 
   ngOnInit() {
-    this.hdir = this.hdir.toLowerCase();
-    this.vdir = this.vdir.toLowerCase();
-
-    if (!validHDirs.includes(this.hdir)) {
+    if (!validHDir(this.hdir)) {
       this.hdirOutOfRange()
     }
 
-    if (!validVDirs.includes(this.vdir)) {
+    if (!validVDir(this.vdir)) {
       this.vdirOutOfRange();
     }
 

@@ -1,7 +1,7 @@
 <div class="handle"
      [class.handle__reverse]="this.hdir === 'right'">
   <div [ngClass]="this.handleBarClasses"
-     [class.handle__reverse-content]="this.hdir === 'right'">
+       [class.handle__reverse-content]="this.hdir === 'right'">
 
     <div *ngIf="this.title"
          class="handle__text">
@@ -11,17 +11,10 @@
     </div>
     <div *ngIf="this.title"
          class="handle__seperator-button"></div>
-    <div *ngIf="this.buttons"
-         class="handle__button-area">
-      <div class="handle__seperator"></div>
-      <ng-container *ngFor="let b of this.buttons">
-        <button class="handle__button"
-                (click)="this.buttonClicked(b.id)">
-          {{ b.name }}
-        </button>
-        <div class="handle__seperator"></div>
-      </ng-container>
-    </div>
+    <ui-cmd-bar *ngIf="this.commands"
+                layout="horizontal"
+                [commands]="this.commands"
+                (commandClickedEvent)="this.commandClicked($event)"></ui-cmd-bar>
   </div>
   <div class="handle__transition">
     <div [ngClass]="this.handleTransitionCornerClasses">

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { UiCommand, UiCommandStyle } from 'src/app/modules/ui/ui.module';
 
 export interface FileItem {
   id: string;
@@ -29,6 +30,10 @@ export class FileExplorerComponent implements OnInit {
     }
   ];
 
+  public commands: UiCommand[] = [
+    { name: 'new', id: 'add-file', style: UiCommandStyle.U2 },
+  ];
+
   constructor() { }
 
   ngOnInit() {
@@ -44,6 +49,7 @@ export class FileExplorerComponent implements OnInit {
   }
 
   handleButton(event: string) {
+    console.log(event);
     if (event.toLowerCase() === 'add-file') {
       this.files.push({
         id: (this.files.length + 1).toString(),

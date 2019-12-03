@@ -1,7 +1,35 @@
 .blade {
+    --ui-cmd-bar-height: var(--ui-blade-height);
+
     background-color: var(--ui-primary-color);
     color: var(--ui-on-primary-color);
     height: var(--ui-blade-height);
+
+    display: flex;
+    justify-content: space-between;
+    padding-right: 3rem;
+    padding-left: 3rem;
+}
+
+.blade__reverse {
+    flex-direction: row-reverse;
+}
+
+.blade__text {
+    height: var(--ui-blade-height);
+    background-color: var(--ui-background-color);
+    color: var(--ui-on-background-color);
+    font-size: var(--ui-blade-height);
+    font-weight: 700;
+    text-transform: uppercase;
+    display: flex;
+}
+
+.blade__seperator {
+    background-color: var(--ui-background-color);
+    color: var(--ui-on-background-color);
+    width: var(--ui-seperator-width);
+    height: var(--ui-handle-height);
 }
 
 .blade__corner-top-right {

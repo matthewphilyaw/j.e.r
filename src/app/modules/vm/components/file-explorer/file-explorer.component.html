@@ -1,21 +1,20 @@
-<ui-handle title="Files"
+<ui-handle title="Programs"
            hdir="left"
            vdir="top"></ui-handle>
 <div class="explorer">
-  <div class="explorer__row explorer__header">
+  <div class="explorer__row">
     <ui-blade  class="explorer__gutter"
                hdir="right"
                vdir="top"></ui-blade>
     <ui-handle class="explorer__content"
                hdir="right"
-               vdir="top"
-               [buttons]="[
-                { name: 'add', id: 'add-file' }
-               ]"
-               (buttonClickedEvent)="this.handleButton($event)"></ui-handle>
+               vdir="top"></ui-handle>
   </div>
   <div class="explorer__row explorer__row-expand">
-    <div class="explorer__gutter explorer__gutter-fill"></div>
+    <ui-cmd-bar class="explorer__gutter explorer__gutter-fill"
+                layout="vertical"
+                [commands]="this.commands"
+                (commandClickedEvent)="this.handleButton($event)"></ui-cmd-bar>
     <ul class="explorer__items explorer__content">
       <li *ngFor="let file of files"
           [class.active]="file.id === activeFileId"

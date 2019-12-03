@@ -4,6 +4,8 @@
 }
 
 .handle__bar {
+    --ui-cmd-bar-height: var(--ui-handle-height);
+
     height: var(--ui-handle-height);
     background-color: var(--ui-primary-color);
     color: var(--ui-on-primary-color);
@@ -58,38 +60,6 @@
     font-weight: 700;
     text-transform: uppercase;
     display: flex;
-}
-
-.handle__button-area {
-    display: flex;
-    background-color: var(--ui-background-color);
-    color: var(--ui-on-background-color);
-    cursor: pointer;
-}
-
-.handle__button {
-    background-color: var(--ui-primary-color);
-    color: var(--ui-on-primary-color);
-    font-size: calc(var(--ui-handle-height) * .75);
-    font-weight: 700;
-    padding-top: .1em;
-    padding-left: .2rem;
-    padding-right: .2rem;
-    text-transform: uppercase;
-    cursor: pointer;
-}
-
-.handle__button:hover {
-    background-color: var(--ui-secondary-color);
-    color: var(--ui-on-secondary-color);
-    cursor: pointer;
-}
-
-.handle__text:empty {
-    background-color: var(--ui-primary-color);
-    color: var(--ui-on-primary-color);
-    padding: 0;
-
 }
 
 .handle__transition {

@@ -1,19 +1,16 @@
 import { Component, OnInit, Input, EventEmitter, ElementRef, Output } from '@angular/core';
-import { validHDirs, validVDirs, attributeOutOfRange } from '../../common/ui.utility';
-import { UiButton } from '../../common/ui.button';
+import { attributeOutOfRange, validHDir, validVDir, validVDirs, validHDirs } from '../../common/ui.utility';
+import { UiCommand, UiCommandBar } from '../../common/ui.command.bar';
 
 @Component({
   selector: 'ui-handle',
   templateUrl: './handle.component.html',
   styleUrls: ['./handle.component.scss']
 })
-export class HandleComponent implements OnInit {
+export class HandleComponent extends UiCommandBar implements OnInit {
   @Input() title: string;
   @Input() hdir: string = 'left';
   @Input() vdir: string = 'top';
-  @Input() buttons: UiButton[];
-
-  @Output() buttonClickedEvent = new EventEmitter<string>();
 
   private _handleBarClasses: string[] = [];
   private _handleTransitionCornerClasses: string[] = [];
@@ -26,26 +23,21 @@ export class HandleComponent implements OnInit {
     return this._handleTransitionCornerClasses;
   }
 
-  constructor() { }
+  constructor() {
+    super();
+  }
 
   ngOnInit() {
-    this.hdir = this.hdir.toLowerCase();
-    this.vdir = this.vdir.toLowerCase();
-
-    if (!validHDirs.includes(this.hdir)) {
+    if (!validHDir(this.hdir)) {
       this.hdirOutOfRange()
     }
 
-    if (!validVDirs.includes(this.vdir)) {
+    if (!validVDir(this.vdir)) {
       this.vdirOutOfRange();
     }
 
     this.buildHandleBarClasses();
     this.buildHandleTransitionCornerClasses();
-  }
-
-  protected buttonClicked(id: string) {
-    this.buttonClickedEvent.emit(id);
   }
 
   private buildHandleBarClasses() {
@@ -71,11 +63,11 @@ export class HandleComponent implements OnInit {
   }
 
   private hdirOutOfRange() {
-    throw new Error(attributeOutOfRange('ui-handle', 'hdir', this.hdir, validHDirs));
+    throw new Error(attributeOutOfRange('ui-handle', 'hdir', this.hdir, validVDirs));
   }
 
   private vdirOutOfRange() {
-    throw new Error(attributeOutOfRange('ui-handle', 'vdir', this.vdir, validVDirs));
+    throw new Error(attributeOutOfRange('ui-handle', 'vdir', this.vdir, validHDirs));
   }
 
 }

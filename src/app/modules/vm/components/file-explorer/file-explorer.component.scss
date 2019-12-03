@@ -12,8 +12,8 @@
 }
 
 .explorer {
-    --ui-blade-height: .5rem;
-    --ui-handle-height: calc(var(--ui-blade-height) / 2);
+    --ui-blade-height: 1rem;
+    --ui-handle-height: calc(var(--ui-blade-height) / 3);
     --ui-handle-cap-rad: .1rem;
 
     --ui-primary-color: var(--secondary-color);
@@ -21,7 +21,7 @@
     --ui-secondary-color: var(--primary-color);
     --ui-on-secondary-color: var(--on-primary-color);
 
-    --file-explorer-gutter: var(--ui-handle-height);
+    --file-explorer-gutter: 2em;
 
     grid-area: explorer;
 
@@ -30,20 +30,13 @@
     margin-right: .75em;
 }
 
-.explorer__header {
-    --ui-blade-height: 1.5rem;
-    --ui-handle-height: calc(var(--ui-blade-height) / 1.5);
-
-}
-
 .explorer__row {
     display: flex;
 }
 
 .explorer__row-expand {
     height: 500px;
-    padding-top: .2em;
-    padding-bottom: .2em;
+    padding-bottom: var(--ui-seperator-width);
     background-color: var(--surface-color);
     color: var(--on-surface-color);
 }
@@ -53,6 +46,7 @@
 }
 
 .explorer__gutter-fill {
+    --ui-cmd-bar-height: 2rem;
     background-color: var(--secondary-color);
 }
 
