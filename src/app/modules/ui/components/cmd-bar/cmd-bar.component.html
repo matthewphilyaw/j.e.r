@@ -1,9 +1,9 @@
-<nav class="cmd__bar cmd__bar-{{this.layout}}">
+<nav class="cmd__bar cmd__bar-{{this.layout}}" >
   <ng-container *ngFor="let b of this.commands">
-    <div class="cmd__spacer cmd__spacer-{{this.layout}}"></div>
+    <div class="ui__spacer ui__spacer-{{this.layout}}"></div>
     <button class="cmd__button cmd__button-{{this.layout}} cmd__button-{{this.layout}}-{{b.style}}"
             (click)="this.commandClicked(b.id)">{{b.name}}</button>
   </ng-container>
   <div *ngIf="this.commands.length > 0" 
-       class="cmd__spacer cmd__spacer-{{this.layout}}"></div>
+       class="ui__spacer ui__spacer-{{this.layout}}"></div>
 </nav>

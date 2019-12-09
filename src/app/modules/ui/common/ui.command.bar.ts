@@ -1,4 +1,5 @@
 import { Input, EventEmitter, Output } from '@angular/core';
+import { UiDirectional } from './ui.directional';
 
 export enum UiCommandStyle {
   U1 = 'u1',
@@ -12,7 +13,7 @@ export class UiCommand {
   public style: UiCommandStyle;
 }
 
-export class UiCommandBar {
+export class UiCommandBar extends UiDirectional {
   @Input() commands: UiCommand[] = []
   @Output() commandClickedEvent: EventEmitter<string> = new EventEmitter<string>();
 

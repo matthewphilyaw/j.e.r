@@ -5,6 +5,7 @@
 
 .handle__bar {
     --ui-cmd-bar-height: var(--ui-handle-height);
+    --ui-title-height: var(--ui-handle-height);
 
     height: var(--ui-handle-height);
     background-color: var(--ui-primary-color);
@@ -32,13 +33,6 @@
 
 .handle__text-space-left {
     padding-left: var(--ui-handle-title-pad);
-}
-
-.handle__seperator {
-    background-color: var(--ui-background-color);
-    color: var(--ui-on-background-color);
-    width: var(--ui-seperator-width);
-    height: var(--ui-handle-height);
 }
 
 .handle__seperator-button {

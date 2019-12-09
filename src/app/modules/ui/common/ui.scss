@@ -1,0 +1,12 @@
+.ui__spacer {
+    background-color: var(--ui-background-color);
+    color: var(--ui-on-background-color);
+}
+
+.ui__spacer-horizontal {
+    width: var(--ui-spacer-size);
+}
+
+.ui__spacer-vertical {
+    height: var(--ui-spacer-size);
+}

@@ -1,16 +1,12 @@
-import { Component, OnInit, Input, EventEmitter, ElementRef, Output } from '@angular/core';
-import { attributeOutOfRange, validHDir, validVDir, validVDirs, validHDirs } from '../../common/ui.utility';
-import { UiCommand, UiCommandBar } from '../../common/ui.command.bar';
+import { Component, OnInit, Input } from '@angular/core';
+import { UiTitleCommandBar } from '../../common/ui.title.command.bar';
 
 @Component({
   selector: 'ui-handle',
   templateUrl: './handle.component.html',
-  styleUrls: ['./handle.component.scss']
+  styleUrls: ['./handle.component.scss', '../../common/ui.scss']
 })
-export class HandleComponent extends UiCommandBar implements OnInit {
-  @Input() title: string;
-  @Input() hdir: string = 'left';
-  @Input() vdir: string = 'top';
+export class HandleComponent extends UiTitleCommandBar implements OnInit {
 
   private _handleBarClasses: string[] = [];
   private _handleTransitionCornerClasses: string[] = [];
@@ -28,13 +24,9 @@ export class HandleComponent extends UiCommandBar implements OnInit {
   }
 
   ngOnInit() {
-    if (!validHDir(this.hdir)) {
-      this.hdirOutOfRange()
-    }
-
-    if (!validVDir(this.vdir)) {
-      this.vdirOutOfRange();
-    }
+    this.validateDirectionalInput('ui-handle', {
+      layoutRequired: false
+    });
 
     this.buildHandleBarClasses();
     this.buildHandleTransitionCornerClasses();
@@ -61,13 +53,4 @@ export class HandleComponent extends UiCommandBar implements OnInit {
       `handle__transition-rad-${this.vdir}-${this.hdir}`
     ];
   }
-
-  private hdirOutOfRange() {
-    throw new Error(attributeOutOfRange('ui-handle', 'hdir', this.hdir, validVDirs));
-  }
-
-  private vdirOutOfRange() {
-    throw new Error(attributeOutOfRange('ui-handle', 'vdir', this.vdir, validHDirs));
-  }
-
 }

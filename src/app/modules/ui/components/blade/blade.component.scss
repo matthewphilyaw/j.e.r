@@ -1,5 +1,6 @@
 .blade {
     --ui-cmd-bar-height: var(--ui-blade-height);
+    --ui-title-height: var(--ui-blade-height);
 
     background-color: var(--ui-primary-color);
     color: var(--ui-on-primary-color);
@@ -7,12 +8,20 @@
 
     display: flex;
     justify-content: space-between;
-    padding-right: 3rem;
-    padding-left: 3rem;
 }
 
 .blade__reverse {
     flex-direction: row-reverse;
+}
+
+.blade__input {
+    background-color: var(--ui-background-color);
+    color: var(--ui-on-background-color);
+    font-size: var(--ui-blade-height);
+    width: var(--ui-blade-input-width);
+    padding: 0;
+    border: none;
+    border-bottom: .1rem solid var(--ui-secondary-color);
 }
 
 .blade__text {
@@ -23,13 +32,6 @@
     font-weight: 700;
     text-transform: uppercase;
     display: flex;
-}
-
-.blade__seperator {
-    background-color: var(--ui-background-color);
-    color: var(--ui-on-background-color);
-    width: var(--ui-seperator-width);
-    height: var(--ui-handle-height);
 }
 
 .blade__corner-top-right {

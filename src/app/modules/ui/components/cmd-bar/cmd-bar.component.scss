@@ -1,7 +1,13 @@
 .cmd__bar {
     display: flex;
     justify-content: flex-start;
+
+    margin-right: var(--ui-cmd-bar-margin-right);
+    margin-left: var(--ui-cmd-bar-margin-left);
+    margin-top: var(--ui-cmd-bar-margin-top);
+    margin-bottom: var(--ui-cmd-bar-margin-bottom);
 }
+
 
 .cmd__bar-vertical {
     flex-direction: column;
@@ -11,18 +17,6 @@
 .cmd__bar-horizontal {
     flex-direction: row;
     height: var(--ui-cmd-bar-height);
-}
-
-.cmd__spacer {
-    background-color: var(--ui-background-color);
-}
-
-.cmd__spacer-horizontal {
-    width: var(--ui-seperator-width);
-}
-
-.cmd__spacer-vertical {
-    height: var(--ui-seperator-width);
 }
 
 .cmd__button {

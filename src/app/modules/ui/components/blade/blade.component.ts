@@ -1,19 +1,14 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { validHDirs, validVDirs, attributeOutOfRange, validVDir, validHDir } from '../../common/ui.utility';
-import { UiCommandBar } from '../../common/ui.command.bar';
+import { UiTitleCommandBar } from '../../common/ui.title.command.bar';
 
 
 @Component({
   selector: 'ui-blade',
   templateUrl: './blade.component.html',
-  styleUrls: ['./blade.component.scss']
+  styleUrls: ['./blade.component.scss', '../../common/ui.scss']
 })
-export class BladeComponent extends UiCommandBar implements OnInit {
-  @Input() hdir: string = 'left';
-  @Input() vdir: string = 'top';
+export class BladeComponent extends UiTitleCommandBar implements OnInit {
   @Input() reverse: boolean = false;
-
-  @Input() title: string;
 
   private _bladeClasses: string[] = [];
 
@@ -26,14 +21,9 @@ export class BladeComponent extends UiCommandBar implements OnInit {
   }
 
   ngOnInit() {
-    if (!validHDir(this.hdir)) {
-      this.hdirOutOfRange()
-    }
-
-    if (!validVDir(this.vdir)) {
-      this.vdirOutOfRange();
-    }
-
+    this.validateDirectionalInput('ui-blade', {
+      layoutRequired: false  
+    });
     this.buildBladeClasses();
   }
 
@@ -43,13 +33,4 @@ export class BladeComponent extends UiCommandBar implements OnInit {
       `blade__corner-${this.vdir}-${this.hdir}`
     ];
   }
-
-  private hdirOutOfRange() {
-    throw new Error(attributeOutOfRange('ui-blade', 'hdir', this.hdir, validHDirs));
-  }
-
-  private vdirOutOfRange() {
-    throw new Error(attributeOutOfRange('ui-blade', 'vdir', this.vdir, validVDirs));
-  }
-
 }

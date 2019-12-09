@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UiCommand, UiCommandStyle } from 'src/app/modules/ui/ui.module';
+import { FileService } from '../../../../services/file.service';
+import { FileItemModel } from 'src/app/services/models/file-item.model';
 
 export interface FileItem {
   id: string;
@@ -14,31 +16,24 @@ export interface FileItem {
 export class FileExplorerComponent implements OnInit {
   public activeFileId: string = 'asdf45';
 
-
-  public files: FileItem[] = [
-    {
-      id: '1235',
-      name: 'Some File'
-    },
-    {
-      id: 'asdf45',
-      name: 'Some Other File'
-    },
-    {
-      id: '123fj4k1',
-      name: 'Another File'
-    }
-  ];
-
   public commands: UiCommand[] = [
     { name: 'new', id: 'add-file', style: UiCommandStyle.U2 },
+    { name: 'del', id: 'del-file', style: UiCommandStyle.U1 },
   ];
 
-  constructor() { }
+  get files(): FileItemModel[] {
+    return this.fileService.getFiles();
+  }
+
+  constructor(
+    private fileService: FileService
+  ) { }
 
   ngOnInit() {
-
+    console.log('initting fexplorer');
   }
+
+
 
   activateFile(fileId: string) {
     this.activeFileId = fileId;
@@ -49,12 +44,6 @@ export class FileExplorerComponent implements OnInit {
   }
 
   handleButton(event: string) {
-    console.log(event);
-    if (event.toLowerCase() === 'add-file') {
-      this.files.push({
-        id: (this.files.length + 1).toString(),
-        name: 'NewFile'
-      });
-    }
+    this.fileService.createFile(event);
   }
 }

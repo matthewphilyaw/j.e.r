@@ -16,7 +16,7 @@
                 [commands]="this.commands"
                 (commandClickedEvent)="this.handleButton($event)"></ui-cmd-bar>
     <ul class="explorer__items explorer__content">
-      <li *ngFor="let file of files"
+      <li *ngFor="let file of this.files"
           [class.active]="file.id === activeFileId"
           class="explorer__item">
 
