@@ -2,9 +2,12 @@
           vdir="top"
           title="test.asm"
           [editable]="true"
-          [commands]="this.commands"
+          [commands]="this.fileCommands"
+          (commandClickedEvent)="this.handleButton($event)"
           class="editor__top-blade space-bottom"></ui-blade>
 <textarea #editorPane></textarea>
 <ui-blade hdir="right"
           vdir="bottom"
-          class="space-top"></ui-blade>
+          [commands]="this.vmCommands"
+          (commandClickedEvent)="this.handleButton($event)"
+          class="editor__bottom-blade space-top"></ui-blade>
