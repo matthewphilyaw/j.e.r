@@ -1,5 +1,9 @@
+@preprocessor typescript
+
 @{%
+  import * as moo from 'moo';
   const empty = x => null;
+  
   const lexer = moo.compile({
     ws:         /[ \t]/,
     hex:        { match: /0[xX][0-9a-fA-F]+/, value: (m) => parseInt(m.slice(2).toLowerCase(), 16) },
