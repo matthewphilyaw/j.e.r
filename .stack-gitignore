@@ -143,3 +143,6 @@ $RECYCLE.BIN/
 # project output
 /lib/
 /public/
+
+# stack specific gitignore copy for npm workaround
+.stack-gitignore
