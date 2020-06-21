@@ -2,6 +2,10 @@ import {Grammar, Parser} from 'nearley';
 import riscVGrammar from '../../grammar/risc-v-grammar';
 import * as fs from 'fs';
 
+import * as instrHelpers from './risc-v-instruction-helpers';
+import {binWord, Chunk} from '../../utils/binary-string-formatter';
+import {I_TYPE_PATTERN, R_TYPE_PATTERN} from './risc-v-instruction-builders';
+
 if (process.argv.length !== 3) {
   console.log('Please provide path to program file');
   process.exit(1);
@@ -44,6 +48,35 @@ function printInstruction(statement: any): void {
   }
 
   console.log(opcode, argList);
+
+
+  switch (statement.opcodeToken.value.toUpperCase()) {
+    case 'ADD': {
+      const rd = statement.argTokens[0];
+      const rs1 = statement.argTokens[1];
+      const rs2 = statement.argTokens[2];
+
+      const word = instrHelpers.ADD(rd.value, rs1.value, rs2.value);
+      const formatted = binWord(word, Chunk.CUSTOM, R_TYPE_PATTERN);
+      console.log(formatted);
+
+      break;
+    }
+    case 'ADDI': {
+      const rd = statement.argTokens[0];
+      const rs1 = statement.argTokens[1];
+      const imm = statement.argTokens[2];
+
+      const word = instrHelpers.ADDI(rd.value, rs1.value, imm.value);
+      const formatted = binWord(word, Chunk.CUSTOM, I_TYPE_PATTERN);
+      console.log(formatted);
+
+      break;
+    }
+    default:
+      console.log(`${statement.opcodeToken} is not supported`);
+      break;
+  }
 }
 
 /* eslint-disable */
