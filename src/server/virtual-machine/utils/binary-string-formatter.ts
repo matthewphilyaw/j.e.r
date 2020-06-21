@@ -43,11 +43,11 @@ function formatWord(chunk: Chunk, word: string, bytePattern: number[], nibblePat
 }
 
 export function binWord(word: number, chunk: Chunk = Chunk.BYTE, pattern: number[] = []): string {
-  const bin = word.toString(2).padStart(32, '0');
+  const bin = (word >>> 0).toString(2).padStart(32, '0');
   return formatWord(chunk, bin, Array(4).fill(8), Array(8).fill(4), pattern);
 }
 
 export function hexWord(word: number, chunk: Chunk = Chunk.BYTE, pattern: number[] = []): string {
-  const bin = word.toString(16).padStart(8, '0').toUpperCase();
+  const bin = (word >>> 0).toString(16).padStart(8, '0').toUpperCase();
   return formatWord(chunk, bin, Array(4).fill(2), Array(8).fill(1), pattern);
 }

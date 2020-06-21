@@ -30,11 +30,11 @@ function func7(func7: number): number {
 }
 
 function immIType(imm: number): number {
-  return (imm & IMM_12) << 20;
+  return ((imm >>> 0) & IMM_12) << 20;
 }
 
 function immUType(imm: number): number {
-  return (imm & IMM_U20) << 12;
+  return ((imm >>> 0) & IMM_U20) << 12;
 }
 
 export function buildRType(oc: number, regD: number, regS1: number, regS2: number, f3: number, f7: number): number {
@@ -50,11 +50,13 @@ export function buildIType(oc: number, regD: number, regS1: number, imm: number,
 export function buildSType(oc: number, regS1: number, regS2: number, imm: number, f3: number): number {
   // Pass upper 7 bits of imm into func7 slot
   // and lower 5 bits of imm into rd
-  const instr = func7(imm >>> 5) | rs2(regS2) | rs1(regS1) | func3(f3) | rd(imm) | opcode(oc);
+  const instr = func7(((imm >>> 0) >>> 5)) | rs2(regS2) | rs1(regS1) | func3(f3) | rd(imm) | opcode(oc);
   return instr;
 }
 
 export function buildBType(oc: number, regS1: number, regS2: number, imm: number, f3: number): number {
+  imm = (imm >>> 0);
+
   const immBit12    = (imm >>> 11) & 0x1;
   const immBit11    = (imm >>> 10) & 0x1;
   const immBit1to4  = imm & 0xf;
@@ -75,6 +77,8 @@ export function buildUType(oc: number, regD: number, imm: number): number {
 }
 
 export function buildJType(oc: number, regD: number, imm: number): number {
+  imm = (imm >>> 0); // coercing to unsigned
+
   const immBit20       = (imm >>> 19) & 0x1;
   const immBit19to12   = (imm >>> 11) & 0xff;
   const immBit11       = (imm >>> 10) & 0x1;
