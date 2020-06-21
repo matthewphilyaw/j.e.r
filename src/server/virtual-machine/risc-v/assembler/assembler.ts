@@ -1,5 +1,5 @@
 import {Grammar, Parser} from 'nearley';
-import riscVGrammar from './parser/risc-v-grammar';
+import riscVGrammar from '../../grammar/risc-v-grammar';
 import * as fs from 'fs';
 
 if (process.argv.length !== 3) {
@@ -33,6 +33,7 @@ function printArg(arg): string {
 // @ts-ignore
 function printInstruction(statement: any): void {
   const opcode = `opcode: ${statement.opcodeToken.value}`;
+
   /* eslint-disable */
   // @ts-ignore
   const args = statement.argTokens.map(printArg);
