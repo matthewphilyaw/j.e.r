@@ -1,30 +1,34 @@
 @preprocessor typescript
 
 @{%
+import * as moo from 'moo';
+import * as astat from './assembly-statements';
+const empty = (): null => null;
 
-  import * as moo from 'moo';
-  const empty = x => null;
+const lexer = moo.compile({
+  ws:         /[ \t]/,
+  // @ts-ignore
+  hex:        { match: /0[xX][0-9a-fA-F]+/, value: (m) => parseInt(m.slice(2).toLowerCase(), 16) },
+  // @ts-ignore
+  bin:        { match: /0b[01]+/, value: (m) => parseInt(m.slice(2), 2) },
+  ident:      /[_0-9A-Za-z]*[_A-Za-z]+[_0-9A-Za-z]*/,
+  // @ts-ignore
+  int:        { match: /[-+]?[0-9]+/, value: m => parseInt(m) },
+  string:     /"(?:\\['\\nt]|[^\n'\\])*"/,
+  special:    /[\.:,\(\)%]/,
+  comment:    /#[^\n]*/,
+  nl: { match: /\n/, lineBreaks: true }
+});
 
-  const lexer = moo.compile({
-    ws:         /[ \t]/,
-    hex:        { match: /0[xX][0-9a-fA-F]+/, value: (m) => parseInt(m.slice(2).toLowerCase(), 16) },
-    bin:        { match: /0b[01]+/, value: (m) => parseInt(m.slice(2), 2) },
-    ident:      /[_0-9A-Za-z]*[_A-Za-z]+[_0-9A-Za-z]*/,
-    int:        { match: /[-+]?[0-9]+/, value: m => parseInt(m) },
-    string:     /"(?:\\['\\nt]|[^\n'\\])*"/,
-    special:    /[\.:,\(\)%]/,
-    comment:    /#[^\n]*/,
-    nl: { match: /\n/, lineBreaks: true }
-  });
 %}
 
 @lexer lexer
 
 program     -> statement (%nl statement):* {%
-  rule => {
-    const statements = [];
+  (rule): astat.AssemblyStatement[] => {
+    const statements: astat.AssemblyStatement[] = [];
 
-    const flattenStatement = (statement) => {
+    const flattenStatement = (statement: astat.AssemblyStatement | astat.AssemblyStatement[]) => {
    	  if (Array.isArray(statement)) {
 	    const toPush = statement.flatMap(s => s);
 	    statements.push(...toPush);
@@ -33,7 +37,7 @@ program     -> statement (%nl statement):* {%
 	  }
 	}
 
-	const flattenRule = (rule) => {
+	const flattenRule = (rule: any) => {
 	  for (const statement of rule) {
       	if (!statement[1]) { continue; }
 
@@ -57,7 +61,7 @@ statement   -> _ instruction eol {% ([, inst,]) => inst %}
              | _ directive eol {% ([, directive, ]) => directive %}
              | eol {% empty %}
 
-directive   -> directiveId {% rule => ({ type: "directive", nameToken: rule[0], argTokens: [] }) %}
+directive   -> directiveId {% rule => new astat.Directive(rule[0], []) %}
              | directiveId __ (dirArg sep):* dirArg {%
   rule => {
     const nameToken = rule[0];
@@ -69,15 +73,14 @@ directive   -> directiveId {% rule => ({ type: "directive", nameToken: rule[0], 
 
     args.push(rule[3][0]);
 
-    return {
-      type: "directive",
-      nameToken: nameToken,
-      argTokens: args
-    };
+    return new astat.Directive(
+      nameToken,
+      args
+    );
   }
 %}
 
-instruction -> %ident {% rule => ({ type: "instruction", opcodeToken: rule[0], argTokens: [] }) %}
+instruction -> %ident {% rule => new astat.Instruction(rule[0], []) %}
              | %ident __ (instrArg sep):* instrArg {%
   rule => {
     const opCodeToken = rule[0];
@@ -89,11 +92,10 @@ instruction -> %ident {% rule => ({ type: "instruction", opcodeToken: rule[0], a
 
     args.push(rule[3][0]);
 
-    return {
-      type: "instruction",
-      opcodeToken: opCodeToken,
-      argTokens: args
-    };
+    return new astat.Instruction(
+      opCodeToken,
+      args
+    );
   }
 %}
 
@@ -113,37 +115,34 @@ dirArg      -> %int
 
 # Line Fragments
 directiveId -> "." %ident {% rule => rule[1] %}
-label       -> (%ident | %int) ":" {% rule => ({ type: "label", nameToken: rule[0][0] }) %}
+label       -> (%ident | %int) ":" {% rule => new astat.Label(rule[0][0]) %}
 offset      -> (%ident | %int | %hex | %bin):? "(" %ident ")" {%
   rule => {
-  let offset = null;
-  if (rule[0]) {
-    offset = rule[0][0];
-  }
+    let offset = null;
+    if (rule[0]) {
+      offset = rule[0][0];
+    }
 
-  return {
-    type: "offset",
-    offset: offset,
-    base: rule[2]
-  };
+    return new astat.Offset(
+      rule[2], // base
+      offset   // offset
+    );
   }
 %}
 
 reloc       -> ("%" %ident "(" %ident ")" | "%" %ident "(" %ident ")" "(" %ident ")") {%
   rule => {
 	if (rule[0][6]) {
-	  return {
-		type: "reloc-offset",
-		relocType: rule[0][1],
-		offset: rule[0][3],
-		base: rule[0][6]
-	  };
+	  return new astat.PseudoRelocation(
+		rule[0][1], // reloc type
+		rule[0][6], // base
+		rule[0][3]  // offset
+      );
 	} else {
-	  return {
-		type: "reloc",
-		relocType: rule[0][1],
-		base: rule[0][3]
-	  };
+	  return new astat.PseudoRelocation(
+		rule[0][1], // reloc type
+		rule[0][3]  // base
+	  );
     }
   }
 %}

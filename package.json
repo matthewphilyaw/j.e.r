@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "env-check": "node ./scripts/env-check.js",
-    "gen-grammar": "nearleyc src/server/virtual-machine/grammar/risc-v-grammar.ne -o ./src/server/parser/risc-v-grammar.ts",
+    "gen-grammar": "nearleyc src/server/virtual-machine/grammar/risc-v-grammar.ne -o src/server/virtual-machine/grammar/risc-v-grammar.ts",
     "start": "npm run env-check && npm run build && node ./scripts/dev.js",
     "serve": "./node_modules/.bin/nodemon --config ./scripts/nodemon.server.json ./lib/server/server.js",
     "watch-client": "./node_modules/.bin/nodemon --config ./scripts/nodemon.client.json --exec \"./node_modules/.bin/webpack-dev-server --config ./scripts/webpack.dev.js\"",

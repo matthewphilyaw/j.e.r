@@ -1,10 +1,12 @@
 import {Grammar, Parser} from 'nearley';
 import riscVGrammar from '../../grammar/risc-v-grammar';
 import * as fs from 'fs';
+import * as astat from '../../grammar/assembly-statements';
+import * as ainst from '../assembler/assembly-instruction-handlers';
 
-import * as instrHelpers from './risc-v-instruction-helpers';
-import {binWord, Chunk} from '../../utils/binary-string-formatter';
-import {I_TYPE_PATTERN, R_TYPE_PATTERN} from './risc-v-instruction-builders';
+import {AssemblerError, AssemblerResult} from '../assembler/assembly-instruction-handlers';
+import {binWord} from '../../utils/binary-string-formatter';
+
 
 if (process.argv.length !== 3) {
   console.log('Please provide path to program file');
@@ -35,64 +37,18 @@ function printArg(arg): string {
 
 /* eslint-disable */
 // @ts-ignore
-function printInstruction(statement: any): void {
-  const opcode = `opcode: ${statement.opcodeToken.value}`;
-
-  /* eslint-disable */
-  // @ts-ignore
-  const args = statement.argTokens.map(printArg);
-
-  let argList = '';
-  if (args.length > 0) {
-    argList = `(${args.join(', ')})`;
-  }
-
-  console.log(opcode, argList);
-
-
-  switch (statement.opcodeToken.value.toUpperCase()) {
-    case 'ADD': {
-      const rd = statement.argTokens[0];
-      const rs1 = statement.argTokens[1];
-      const rs2 = statement.argTokens[2];
-
-      const word = instrHelpers.ADD(rd.value, rs1.value, rs2.value);
-      const formatted = binWord(word, Chunk.CUSTOM, R_TYPE_PATTERN);
-      console.log(formatted);
-
-      break;
-    }
-    case 'ADDI': {
-      const rd = statement.argTokens[0];
-      const rs1 = statement.argTokens[1];
-      const imm = statement.argTokens[2];
-
-      const word = instrHelpers.ADDI(rd.value, rs1.value, imm.value);
-      const formatted = binWord(word, Chunk.CUSTOM, I_TYPE_PATTERN);
-      console.log(formatted);
-
-      break;
-    }
-    default:
-      console.log(`${statement.opcodeToken} is not supported`);
-      break;
-  }
-}
-
-/* eslint-disable */
-// @ts-ignore
-function printLabel(statement: any): void {
-  const labelName = `label: ${statement.nameToken.value}`;
+function printLabel(label: astat.Label): void {
+  const labelName = `label: ${label.nameToken.value}`;
   console.log(labelName);
 }
 
 /* eslint-disable */
 // @ts-ignore
-function printDirective(statement: any): void {
-  const name = `directive: ${statement.nameToken.value}`;
+function printDirective(directive: astat.Directive): void {
+  const name = `directive: ${directive.nameToken.value}`;
   /* eslint-disable */
   // @ts-ignore
-  const args = statement.argTokens.map(at => `${at.type}: ${at.value}`);
+  const args = directive.argTokens.map(at => `${at.type}: ${at.value}`);
 
   let argList = '';
   if (args.length > 0) {
@@ -107,28 +63,49 @@ function run(): void {
   const program = fs.readFileSync(programFile);
 
 
+  const buffer = new ArrayBuffer(2**8);
+  const programMemory = new DataView(buffer);
+
+  let pc = 0;
   try {
     parser.feed(program.toString());
-    const parsedProgram = parser.results[0];
+    const parsedProgram = parser.results[0] as astat.AssemblyStatement[];
 
     for (const statement of parsedProgram) {
-      switch (statement.type.toLowerCase()) {
-        case 'instruction':
-          printInstruction(statement);
-          break;
-        case 'label':
-          printLabel(statement);
-          break;
-        case 'directive':
-          printDirective(statement);
-          break;
-        default:
-          console.log(`statement type: ${statement.type} is not supported`);
-          return;
+      if (statement instanceof astat.Instruction) {
+        const assembled = ainst.assembleStatement(statement);
+
+        if (assembled instanceof AssemblerError) {
+          console.log(assembled);
+        }
+        else if (assembled instanceof AssemblerResult) {
+          console.log(assembled.formattedInstruction);
+          console.log('\t', assembled.formattedBinary)
+
+          programMemory.setUint32(pc, assembled.encodedInstruction, true);
+          pc += 4;
+        }
+        else {
+          throw new Error('Invalid state.');
+        }
+      }
+      else if (statement instanceof astat.Label) {
+        printLabel(statement);
+      }
+      else if (statement instanceof astat.Directive) {
+        printDirective(statement);
+      }
+      else {
+        console.log(`statement type: ${typeof statement} is not supported`);
       }
     }
   } catch (err) {
     console.log(err);
+  }
+
+  console.log('program:')
+  for (let i = 0; i < programMemory.byteLength; i+=4) {
+    console.log(`0x${i.toString(16).padStart(4, '0')}:`, binWord(programMemory.getUint32(i, true)));
   }
 }
 
