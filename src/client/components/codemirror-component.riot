@@ -1,0 +1,79 @@
+<codemirror-component>
+
+  <blade-component
+          hdir="left"
+          vdir="top">
+  </blade-component>
+  <textarea id="editor-area">
+  </textarea>
+  <blade-component
+          hdir="right"
+          vdir="bottom">
+  </blade-component>
+
+  <script type="ts">
+    import { RiotComponentExport } from 'riot';
+    import { fromTextArea } from 'codemirror';
+    import 'codemirror/keymap/vim';
+    import 'codemirror/mode/gas/gas';
+
+    import BladeComponent from './theme/blade-component.riot';
+
+    function build(): RiotComponentExport<never, never> {
+      return {
+        onMounted() {
+          const editorTag: HTMLTextAreaElement = document.getElementById('editor-area') as HTMLTextAreaElement;
+
+          fromTextArea(
+            editorTag,
+            {
+              lineNumbers: true,
+              mode: 'gas',
+              theme: 'blackboard',
+              keyMap: 'vim'
+            }
+          );
+        }
+      };
+    }
+
+    build.components = {
+      BladeComponent
+    };
+
+    export default build;
+  </script>
+
+
+  <style type="scss">
+    :host {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .CodeMirror {
+      flex: 1;
+      width: var(--editor-width);
+      font-size: 18px;
+    }
+
+    .space-bottom {
+      margin-bottom: 0.25em;
+    }
+
+    .space-top {
+      margin-top: 0.25em;
+    }
+
+    .editor__top-blade {
+      --ui-cmd-bar-margin-right: 3rem;
+      --ui-title-margin-left: 1em;
+      --ui-title-size: 22rem;
+    }
+
+    .editor__bottom-blade {
+      --ui-cmd-bar-margin-right: 3rem;
+    }
+  </style>
+
+</codemirror-component>

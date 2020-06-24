@@ -1,9 +1,100 @@
 <vm-editor>
-  <h1>VM</h1>
+    <handle-component
+            class="file-explorer"
+            hdir="left"
+            vdir="top">
+
+    </handle-component>
+    <codemirror-component class="editor">
+    </codemirror-component>
+    <div class="vm">
+      <div style="grid-area: content"></div>
+      <handle-component
+              style="grid-area: handle;"
+              hdir="right"
+              vdir="bottom">
+
+      </handle-component>
+    </div>
+
+  <script type="ts">
+    import { RiotComponentExport } from 'riot';
+
+    import BladeComponent from '../../components/theme/blade-component.riot';
+    import HandleComponent from '../../components/theme/handle-component.riot';
+    import CodemirrorComponent from '../../components/codemirror-component.riot';
+
+    function build(): RiotComponentExport<never, never> {
+      return {};
+    }
+
+    build.components = {
+      BladeComponent,
+      HandleComponent,
+      CodemirrorComponent
+    };
+
+    export default build;
+  </script>
 
   <style type="scss">
     :host {
-      display: block;
+      --ui-primary-color: var(--primary-color);
+      --ui-secondary-color: var(--secondary-color);
+      --ui-background-color: var(--background-color);
+
+      --ui-on-primary-color: var(--on-primary-color);
+      --ui-on-secondary-color: var(--on-secondary-color);
+      --ui-on-background-color: var(--on-background-color);
+
+      --ui-blade-height: 2.5rem;
+      --ui-blade-input-width: 16rem;
+
+      --ui-handle-height: calc(var(--ui-blade-height) / 1.75);
+      --ui-handle-cap-rad: 0.5rem;
+      --ui-handle-title-pad: 2rem;
+      --ui-spacer-size: 0.25rem;
+      --ui-handle-title-button-spacing: 0.5rem;
+      --ui-title-size: 50%;
+
+      --ui-cmd-bar-margin-right: 0;
+      --ui-cmd-bar-margin-left: 0;
+      --ui-cmd-bar-margin-top: 0;
+      --ui-cmd-bar-margin-bottom: 0;
+
+      --ui-title-margin-right: 0;
+      --ui-title-margin-left: 0;
+      --ui-title-margin-top: 0;
+      --ui-title-margin-bottom: 0;
+
+      height: 100vh;
+
+      display: grid;
+      grid-template-columns: 250px var(--editor-width) auto;
+      grid-template-areas: 'file-explorer editor vm';
+
+      padding: 0.5em;
+    }
+
+    .file-explorer {
+      grid-area: file-explorer;
+    }
+
+    .editor {
+      grid-area: editor;
+      display: flex;
+    }
+
+    .vm {
+      grid-area: vm;
+
+      display: grid;
+      grid-template-rows: var(--ui-blade-height) auto var(--ui-blade-height);
+      grid-template-areas: 'top' 'content' 'handle';
+    }
+
+    .container {
+      display: flex;
     }
   </style>
 </vm-editor>

@@ -1,0 +1,160 @@
+<handle-component>
+  <div class="handle { state.reverseHandleClass }">
+    <div class={ state.handleBarClasses }></div>
+    <div class="handle__transition">
+      <div class={ state.handleTransitionCornerClasses }></div>
+    </div>
+  </div>
+
+
+  <script type="ts">
+    import {RiotComponentExport} from 'riot';
+
+    interface Props {
+      title: string;
+      hdir: 'left' | 'right';
+      vdir: 'top' | 'bottom';
+    }
+
+    interface State {
+      reverseHandleClass: string;
+      handleBarClasses: string;
+      handleTransitionCornerClasses: string;
+    }
+
+    function build(): RiotComponentExport<Props, State> {
+      return {
+        onBeforeMount(currentProps: Props) {
+          let handleBarClass = `handle__bar handle__cap-${currentProps.hdir} handle__text-space-${currentProps.hdir}`;
+          const handleTransition = `handle__transition-inside-corner handle__transition-${currentProps.vdir} handle__transition-rad-${currentProps.vdir}-${currentProps.hdir}`;
+
+          if (currentProps.vdir === 'bottom') {
+            handleBarClass += ' handle__pull-bottom';
+          }
+
+          this.state = {
+            reverseHandleClass: currentProps.hdir === 'right' ? 'handle__reverse-content' : '',
+            handleBarClasses: handleBarClass,
+            handleTransitionCornerClasses: handleTransition
+          };
+        }
+      };
+    }
+
+    export default build;
+  </script>
+
+
+  <style type="scss">
+    :host {
+      display: block;
+    }
+
+    .handle {
+      display: flex;
+      background-color: var(--ui-background-color);
+    }
+
+    .handle__bar {
+      --ui-cmd-bar-height: var(--ui-handle-height);
+      --ui-title-height: var(--ui-handle-height);
+
+      height: var(--ui-handle-height);
+      background-color: var(--ui-primary-color);
+      color: var(--ui-on-primary-color);
+      display: flex;
+      flex: 1;
+    }
+
+    .handle__reverse {
+      flex-direction: row-reverse;
+    }
+
+    .handle__reverse-content {
+      flex-direction: row-reverse;
+      justify-content: flex-start;
+    }
+
+    .handle__cap-left {
+      border-radius: var(--ui-handle-cap-rad) 0 0 var(--ui-handle-cap-rad);
+    }
+
+    .handle__cap-right {
+      border-radius: 0 var(--ui-handle-cap-rad) var(--ui-handle-cap-rad) 0;
+    }
+
+    .handle__text-space-left {
+      padding-left: var(--ui-handle-title-pad);
+    }
+
+    .handle__seperator-button {
+      background-color: var(--ui-primary-color);
+      color: var(--ui-on-primary-color);
+      width: var(--ui-handle-title-button-spacing);
+      height: var(--ui-handle-height);
+    }
+
+    .handle__text-space-right  {
+      padding-right: var(--ui-handle-title-pad);
+    }
+
+    .handle__text {
+      height: var(--ui-handle-height);
+      background-color: var(--ui-background-color);
+      color: var(--ui-on-background-color);
+      font-size: var(--ui-handle-height);
+      font-weight: 700;
+      text-transform: uppercase;
+      display: flex;
+    }
+
+    .handle__transition {
+      height: var(--ui-blade-height);
+      background-color: var(--ui-primary-color);
+      color: var(--ui-on-primary-color);
+    }
+
+    .handle__transition-inside-corner {
+      background-color: var(--ui-background-color);
+      height: calc(var(--ui-blade-height) - var(--ui-handle-height));
+      width: var(--ui-handle-height);
+    }
+
+    .handle__transition-top {
+      margin-top: var(--ui-handle-height);
+    }
+
+    .handle__transition-bottom {
+      margin-bottom: calc(var(--ui-blade-height) - var(--ui-handle-height));
+    }
+
+    /*
+        The transition radii position is not the position of the radius
+        but rather the general direction of the handle.
+
+        ex: a top left bar needs a top-right radius so top-left
+            in these classes produce a top-right radious buy marked .handle__transition-rad-top-left
+            to make the component code more straight forward
+    */
+    .handle__transition-rad-top-left {
+      border-radius: 0 var(--ui-handle-height) 0 0;
+    }
+
+    .handle__transition-rad-top-right {
+      border-radius: var(--ui-handle-height) 0 0 0;
+    }
+
+    .handle__transition-rad-bottom-left {
+      border-radius: 0 0 var(--ui-handle-height) 0;
+    }
+
+    .handle__transition-rad-bottom-right {
+      border-radius: 0 0 0 var(--ui-handle-height);
+    }
+
+    .handle__pull-bottom {
+      align-self: flex-end;
+    }
+  </style>
+
+</handle-component>
