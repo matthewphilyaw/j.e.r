@@ -1,0 +1,12 @@
+
+# Used to test CPU instructions
+
+# constant stored in memory 4 bytes long starting at 0x04
+# 00 0x00 0x00 0x00 0x00
+# 04 0xEF 0xBE 0xAD 0xDE - 0xDEADBEEF
+# ...
+
+addi x10, x1, 0x04
+lw   x11, 0x10(x10)
+add  x12, x11, x10
+sw   x12, 0(x10)

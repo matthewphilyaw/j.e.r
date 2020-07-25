@@ -1,5 +1,5 @@
 import VersionResource from './resources/version-resource';
-import VmEditorResource from './resources/vn-editor-resource';
+import VmEditorResource from './resources/main-app';
 import MissingRouteResource from './resources/missing-route-resource';
 
 /** Add new resources to the list below */

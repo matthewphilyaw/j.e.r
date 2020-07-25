@@ -20,6 +20,7 @@ function formatStr(bin: string, pattern: number[], seperator: string = ' '): str
   return pieces.join(seperator);
 }
 
+
 function formatWord(chunk: Chunk, word: string, bytePattern: number[], nibblePattern: number[], customPattern: number[]): string {
   let str: string;
   switch (chunk) {
@@ -40,6 +41,10 @@ function formatWord(chunk: Chunk, word: string, bytePattern: number[], nibblePat
   }
 
   return str;
+}
+
+export function binByte(byte: number): string {
+  return (byte >>> 0).toString(2).padStart(8, '0');
 }
 
 export function binWord(word: number, chunk: Chunk = Chunk.BYTE, pattern: number[] = []): string {

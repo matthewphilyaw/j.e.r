@@ -1,0 +1,13 @@
+{% extends 'base.njk' %}
+
+{% block body %}
+
+<main-app active-menu-slug="{{ activeMenuSlug }}"></main-app>
+
+{% endblock %}
+
+{% block scripts_bottom %}
+
+<script src="/public/js/main-app.bundle.js?v={{ APP_VERSION }}"></script>
+
+{% endblock %}
