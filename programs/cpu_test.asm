@@ -6,7 +6,7 @@
 # 04 0xEF 0xBE 0xAD 0xDE - 0xDEADBEEF
 # ...
 
-addi x10, x1, 0x04
+addi x10, x0, 0x04
 lw   x11, 0x10(x10)
 add  x12, x11, x10
 sw   x12, 0(x10)

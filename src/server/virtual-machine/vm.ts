@@ -20,3 +20,9 @@ const cpu = new ProtoCore();
 
 cpu.loadProgram(ctx.programMemoryBuffer);
 cpu.dumpMemories();
+
+cpu.tick();
+cpu.tick();
+cpu.tick();
+cpu.tick();
+cpu.tick();

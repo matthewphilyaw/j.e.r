@@ -64,7 +64,7 @@ export class MemoryController {
     }
 
     const offset = address - mr.startAddress;
-    this.memoryBuffer.setUint16(offset, value);
+    this.memoryBuffer.setUint16(offset, value, true);
 
     return mr.clockCyclesForWrite;
   }
@@ -77,7 +77,7 @@ export class MemoryController {
     }
 
     const offset = address - mr.startAddress;
-    this.memoryBuffer.setUint32(offset, value);
+    this.memoryBuffer.setUint32(offset, value, true);
 
     return mr.clockCyclesForWrite;
   }
@@ -102,7 +102,7 @@ export class MemoryController {
     }
 
     const offset = address - mr.startAddress;
-    const value = this.memoryBuffer.getUint16(offset);
+    const value = this.memoryBuffer.getUint16(offset, true);
     return [value, mr.clockCyclesForWrite];
   }
 
@@ -114,7 +114,7 @@ export class MemoryController {
     }
 
     const offset = address - mr.startAddress;
-    const value = this.memoryBuffer.getUint32(offset);
+    const value = this.memoryBuffer.getUint32(offset, true);
     return [value, mr.clockCyclesForWrite];
   }
 
