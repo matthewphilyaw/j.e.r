@@ -13,16 +13,36 @@ if (!fs.existsSync(programFile)) {
   console.log(`Please provide path to program file. ${programFile} is not a valid path`);
 }
 
-const programBuffer = fs.readFileSync(programFile);
-const ctx = assemble(programBuffer, 2**6);
 
-const cpu = new ProtoCore();
 
-cpu.loadProgram(ctx.programMemoryBuffer);
-cpu.dumpMemories();
+try {
+  const programBuffer = fs.readFileSync(programFile);
+  const ctx = assemble(programBuffer, 2 ** 6);
 
-cpu.tick();
-cpu.tick();
-cpu.tick();
-cpu.tick();
-cpu.tick();
+  const cpu = new ProtoCore();
+
+  cpu.loadProgram(ctx.programMemoryBuffer);
+  cpu.dumpMemories();
+
+  function executeFullStage(): void {
+    cpu.tick();
+    cpu.dumpState();
+    cpu.tick();
+    cpu.dumpState();
+    cpu.tick();
+    cpu.dumpState();
+    cpu.tick();
+    cpu.dumpState();
+    cpu.tick();
+    cpu.dumpState();
+
+    cpu.dumpMemories();
+  }
+
+  while (true) {
+    executeFullStage();
+  }
+
+} catch (e) {
+  console.log('Failed:', e.message);
+}

@@ -82,7 +82,7 @@ export class MemoryController {
     return mr.clockCyclesForWrite;
   }
 
-  readByte(address: number): [number, number] {
+  readByte(address: number): number {
     const mr = this.lookupMemoryRegion(address);
 
     if (mr.accessWidthInBytes > 1) {
@@ -90,11 +90,10 @@ export class MemoryController {
     }
 
     const offset = address - mr.startAddress;
-    const value = this.memoryBuffer.getUint8(offset);
-    return [value, mr.clockCyclesForWrite];
+    return this.memoryBuffer.getUint8(offset);
   }
 
-  readHalfWord(address: number): [number, number] {
+  readHalfWord(address: number): number {
     const mr = this.lookupMemoryRegion(address);
 
     if (mr.accessWidthInBytes > 2) {
@@ -102,11 +101,10 @@ export class MemoryController {
     }
 
     const offset = address - mr.startAddress;
-    const value = this.memoryBuffer.getUint16(offset, true);
-    return [value, mr.clockCyclesForWrite];
+    return this.memoryBuffer.getUint16(offset, true);
   }
 
-  readWord(address: number): [number, number] {
+  readWord(address: number): number {
     const mr = this.lookupMemoryRegion(address);
 
     if (mr.accessWidthInBytes > 4) {
@@ -114,8 +112,7 @@ export class MemoryController {
     }
 
     const offset = address - mr.startAddress;
-    const value = this.memoryBuffer.getUint32(offset, true);
-    return [value, mr.clockCyclesForWrite];
+    return this.memoryBuffer.getUint32(offset, true);
   }
 
   dumpMemories(columns: number): void {
@@ -129,6 +126,7 @@ export class MemoryController {
         const columnValues: string[] = [];
         for (let colNum = 0; colNum < columns; colNum++) {
           const offset = address + colNum;
+          console.log(offset);
           const byte = this.memoryBuffer.getUint8(offset);
           columnValues.push(binByte(byte));
         }

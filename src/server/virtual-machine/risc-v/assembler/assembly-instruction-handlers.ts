@@ -132,7 +132,7 @@ const instructionAssemblers: Record<string, InstructionAssembler> = {
     const offset = instr.argTokens[1] as astat.Offset;
 
     // TODO: Value on Token should be uknown - the lexer explicitly parses this value as number
-    const word = instrHelpers.SW(rd.value, offset.base.value, (offset.offset.value as unknown) as number);
+    const word = instrHelpers.SW(offset.base.value, rd.value, (offset.offset.value as unknown) as number);
     const formatted = binWord(word, Chunk.CUSTOM, S_TYPE_PATTERN);
 
     return new AssembledInstruction(word, formatted, formattedInstruction);

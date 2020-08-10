@@ -1,4 +1,5 @@
 import {MemoryController, MemoryRegion} from './peripherals/memory';
+import {binWord, hexWord} from '../../utils/binary-string-formatter';
 
 const protoMemoryLayout: MemoryRegion[] = [
   {
@@ -25,7 +26,7 @@ enum InstructionFormat {
   R,
   I,
   S,
-  SB,
+  B,
   U,
   J
 }
@@ -41,129 +42,101 @@ class DecodedInstruction {
   ) {}
 }
 
-class ExecutionResult {
-  OperationType: string;
-}
-
-class MemoryAccessResult {
-}
-
 export class ProtoCore {
   private memoryController: MemoryController;
   private pc: number;
   private registers: number[] = new Array(32).fill(0);
 
+  private instruction: number;
+  private decodedInstruction?: DecodedInstruction;
+  private executionResult: number;
+  private memoryAccessResult: number;
+
+  private state: 'fetch' | 'decode' | 'execute' | 'memory-access' | 'write-back';
+
   constructor() {
     this.memoryController = new MemoryController(protoMemoryLayout);
     this.pc = 0;
-    console.log(this.registers);
+    this.state = 'fetch';
+  }
+
+  loadProgram(programBuffer: ArrayBuffer): void {
+    const dv = new DataView(programBuffer);
+
+    this.memoryController.writeWord(0x00, 0);
+    this.memoryController.writeWord(0x04, 10);
+
+    for (let address = 0; address < programBuffer.byteLength; address++) {
+      const byte = dv.getUint8(address);
+      this.memoryController.writeByte(address + 8, byte);
+    }
+
+    this.pc = 8;
+  }
+
+  dumpMemories(): void {
+    this.memoryController.dumpMemories(4);
+  }
+
+  dumpState(): void {
+    console.log('state:               ', this.state);
+    console.log('pc:                  ', this.pc);
+    console.log('instruction:         ', binWord(this.instruction));
+    console.log('decoded instruction: ', this.decodedInstruction);
+    console.log('execution result:    ', hexWord(this.executionResult));
+    console.log('memory access result:', hexWord(this.memoryAccessResult));
+    console.log('registers:');
+    for (let i = 0; i < 32; i++) {
+      console.log(`    x${i}: ${hexWord(this.registers[i])} -> ${this.registers[i]})`);
+    }
   }
 
   tick(): void {
-    /**
-     * Pipeline examples
-     *
-     *   1 2 3 4 5 6 7 8 9 A B C D E F G
-     *   F D X M M W
-     *     F D X - M M W
-     *       F D - X - M M W
-     *         F - D - X - M M W
-     *           - F - D - X - M M W
-     *               - F - D - x - M M W
-     *                   - F - D - X - M M W
-     *                       - F - D - X - M W
-     *                           - F - D - X M W
-     *                               - F - D X M W
-     *                                   - F D X M W
-     *                                       F D X M W
-     *
-     *   1 2 3 4 5 6 7 8
-     *   | | | | | | | |
-     *   F D X M W                   - NOP
-     *     F D X M W                 - NOP
-     *       F D X M M W             - LW
-     *         F D X - M W           - ADD
-     *           F D - X M W         - ADD
-     *             F - D X M W       - ADD
-     *               - F D X M W     - ADD
-     *
-     *
-     *   1 2 3 4 5 6 7 8
-     *   | | | | | | | |
-     *   F D X M W                               - NOP
-     *     F D X M M W                           - LW
-     *       F D X - M M W                       - LW
-     *         F D - X - M M W                   - LW
-     *           F - D - X - M M W               - LW
-     *             - F - D - X - M M W           - LW
-     *                   - F - D - X - M M W     - LW
-     *
-     *
-     *
-     * DONE every tick to simulate pipeline
-     *
-     * const fr = fetch.tick(this.pc);
-     *
-     * if (decode.stalled) {
-     *   fetch.stall(); // will produce the same result next tick - effectively persisting to next tick
-     *                  // and PC will not be incremented.
-     * }
-     *
-     * const dr = decode.tick(fr); // if stalled nothing is done with fr
-     *
-     * if (execute.stalled) {
-     *   decode.stall();
-     * }
-     *
-     * const er = execute.tick(dr);
-     *
-     * if (mem.stalled) { // should stall on second tick for mem not first
-     *  execute.stall();
-     * }
-     *
-     * const mr = mem.tick(er);
-     *
-     * if (wb.stalled) {
-     *  mem.stall();
-     * }
-     *
-     * mb.tick(mr);
-     *
-     */
 
-    // Stage 1
-    const [instruction, cycleCount] = this.fetch(this.pc);
-    console.log(instruction.toString(2).padStart(32, '0'));
-    console.log('memory cycles:', cycleCount);
+    switch (this.state) {
+      case 'fetch':
+        this.fetch();
+        this.state = 'decode';
+        break;
+      case 'decode':
+        this.decode();
+        this.state = 'execute';
+        break;
+      case 'execute':
+        this.execute();
+        this.state = 'memory-access';
+        break;
+      case 'memory-access':
+        this.accessMemory();
+        this.state = 'write-back';
+        break;
+      case 'write-back':
+        this.writeRegisters();
+        this.state = 'fetch';
 
-    // Stage 2
-    const decoded = this.decode(instruction);
-    console.log(decoded);
-    /*
-    // Stage 3
-    const exResult = this.execute(decoded);
+        this.instruction = 0;
+        this.decodedInstruction = undefined;
+        this.executionResult = 0;
+        this.memoryAccessResult = 0;
+        this.pc += 4;
+        break;
+      default:
+        throw new Error('Invalid state');
+    }
 
-    // Stage 4
-    const memResult = this.accessMemory(exResult);
-
-    // Stage 5
-    this.writeRegisters(memResult);
-     */
-
-    this.pc += 4;
   }
 
-  fetch(address: number): [number, number] {
-    return this.memoryController.readWord(address);
+  fetch(): void {
+    this.instruction = this.memoryController.readWord(this.pc);
   }
 
-  decode(instruction: number): DecodedInstruction {
+  decode(): void {
+    const instruction = this.instruction;
+
     // 0x7F
     // 0111 1111
     const opcode = instruction & 0x7F;
     const funct3 = (instruction >>> 12) & 0x7;
-
-    console.log(opcode.toString(2));
 
     // the patterns below may not be correct for all opcodes
 
@@ -174,6 +147,7 @@ export class ProtoCore {
 
     let decoded = null;
     let immediate = 0;
+
     switch (opcode) {
       case 0b0010011:
       case 0b0000011:
@@ -182,7 +156,7 @@ export class ProtoCore {
           InstructionFormat.I,
           (funct3 << 7) | opcode,
           rd,
-          this.registers[r1],
+          r1 === 0 ? 0 : this.registers[r1],
           0,
           immediate
         );
@@ -193,8 +167,8 @@ export class ProtoCore {
           InstructionFormat.S,
           (funct3 << 7) | opcode,
           0,
-          this.registers[r1],
-          0,
+          r1 === 0 ? 0 : this.registers[r1],
+          r2 === 0 ? 0 : this.registers[r2],
           immediate
         );
         break;
@@ -203,8 +177,8 @@ export class ProtoCore {
           InstructionFormat.R,
           (funct7 << 10) | (funct3 << 7) | opcode,
           rd,
-          this.registers[r1],
-          this.registers[r2],
+          r1 === 0 ? 0 : this.registers[r1],
+          r2 === 0 ? 0 : this.registers[r2],
           0
         );
         break;
@@ -212,33 +186,61 @@ export class ProtoCore {
         throw Error('Opcode not recognized!');
     }
 
-    return decoded;
+    this.decodedInstruction = decoded;
   }
 
-  execute(_instruction: DecodedInstruction): ExecutionResult {
-    throw new Error('Not implemented');
+  execute(): void {
+    const instruction = this.decodedInstruction!;
+
+    switch (instruction.fullOpcode) {
+      case 0b0100100011: // sw
+      case 0b0010011: // addi
+      case 0b0100000011: // lw
+        this.executionResult = instruction.firstRegisterValue + instruction.immediate;
+        break;
+      case 0b0110011: // add
+        this.executionResult = instruction.firstRegisterValue + instruction.secondRegisterValue;
+        break;
+      default:
+        throw new Error('unknown instruction');
+    }
+
   }
 
-  accessMemory(_exResult: ExecutionResult): MemoryAccessResult {
-    throw new Error('Not implemented');
-  }
+  accessMemory(): void {
+    const opcode = this.decodedInstruction!.fullOpcode & 0x3f;
+    // If no memory operation is needed then forward the value in execution along
+    if (opcode !== 0b0000011 && opcode !== 0b0100011) {
+      this.memoryAccessResult = this.executionResult;
+      return;
+    }
 
-  writeRegisters(_memoryAccessResult: MemoryAccessResult): void {
-    throw new Error('Not implemented');
-  }
-
-  loadProgram(programBuffer: ArrayBuffer): void {
-    const dv = new DataView(programBuffer);
-
-    for (let address = 0; address < programBuffer.byteLength; address++) {
-      const byte = dv.getUint8(address);
-      this.memoryController.writeByte(address, byte);
+    const address = this.executionResult;
+    switch (this.decodedInstruction!.fullOpcode) {
+      case 0b0100000011:
+        // execution result will be a memory address
+        this.memoryAccessResult = this.memoryController.readWord(address);
+        break;
+      case 0b0100100011:
+        this.memoryController.writeWord(address, this.decodedInstruction!.secondRegisterValue);
+        break;
+      default:
+        throw new Error('Opcode not supported');
     }
   }
 
-  dumpMemories(): void {
-    this.memoryController.dumpMemories(4);
+  writeRegisters(): void {
+    // These formats don't modify registers
+    if (this.decodedInstruction!.instructionFormat === InstructionFormat.S ||
+        this.decodedInstruction!.instructionFormat === InstructionFormat.B) {
+      return;
+    }
+
+    // this could be either a true value from memory or the result of an operation which was forwarded
+    // along the pipeline for simplicity
+    this.registers[this.decodedInstruction!.destinationRegisterIndex] = this.memoryAccessResult;
   }
+
 }
 
 /*
@@ -254,3 +256,74 @@ export class ProtoCore {
 - WB
 
 */
+
+/**
+ * Pipeline examples Notes
+ *
+ *   1 2 3 4 5 6 7 8 9 A B C D E F G
+ *   F D X M M W
+ *     F D X - M M W
+ *       F D - X - M M W
+ *         F - D - X - M M W
+ *           - F - D - X - M M W
+ *               - F - D - x - M M W
+ *                   - F - D - X - M M W
+ *                       - F - D - X - M W
+ *                           - F - D - X M W
+ *                               - F - D X M W
+ *                                   - F D X M W
+ *                                       F D X M W
+ *
+ *   1 2 3 4 5 6 7 8
+ *   | | | | | | | |
+ *   F D X M W                   - NOP
+ *     F D X M W                 - NOP
+ *       F D X M M W             - LW
+ *         F D X - M W           - ADD
+ *           F D - X M W         - ADD
+ *             F - D X M W       - ADD
+ *               - F D X M W     - ADD
+ *
+ *
+ *   1 2 3 4 5 6 7 8
+ *   | | | | | | | |
+ *   F D X M W                               - NOP
+ *     F D X M M W                           - LW
+ *       F D X - M M W                       - LW
+ *         F D - X - M M W                   - LW
+ *           F - D - X - M M W               - LW
+ *             - F - D - X - M M W           - LW
+ *                   - F - D - X - M M W     - LW
+ *
+ *
+ *
+ * DONE every tick to simulate pipeline
+ *
+ * const fr = fetch.tick(this.pc);
+ *
+ * if (decode.stalled) {
+ *   fetch.stall(); // will produce the same result next tick - effectively persisting to next tick
+ *                  // and PC will not be incremented.
+ * }
+ *
+ * const dr = decode.tick(fr); // if stalled nothing is done with fr
+ *
+ * if (execute.stalled) {
+ *   decode.stall();
+ * }
+ *
+ * const er = execute.tick(dr);
+ *
+ * if (mem.stalled) { // should stall on second tick for mem not first
+ *  execute.stall();
+ * }
+ *
+ * const mr = mem.tick(er);
+ *
+ * if (wb.stalled) {
+ *  mem.stall();
+ * }
+ *
+ * mb.tick(mr);
+ *
+ */
