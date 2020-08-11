@@ -1,5 +1,4 @@
 import {MemoryController, MemoryRegion} from './peripherals/memory';
-import {binWord, hexWord} from '../../utils/binary-string-formatter';
 
 const protoMemoryLayout: MemoryRegion[] = [
   {
@@ -42,12 +41,23 @@ class DecodedInstruction {
   ) {}
 }
 
+export interface CoreState {
+  pipelineState:  'fetch' | 'decode' | 'execute' | 'memory-access' | 'write-back';
+  programCounter: number;
+  fetchedInstruction: number;
+  decodedInstruction?: DecodedInstruction;
+  ALUResult: number;
+  memoryAccessResult: number;
+  registers: number[];
+
+}
+
 export class ProtoCore {
-  private memoryController: MemoryController;
+  public  memoryController: MemoryController;
   private pc: number;
   private registers: number[] = new Array(32).fill(0);
 
-  private instruction: number;
+  instruction: number;
   private decodedInstruction?: DecodedInstruction;
   private executionResult: number;
   private memoryAccessResult: number;
@@ -74,21 +84,16 @@ export class ProtoCore {
     this.pc = 8;
   }
 
-  dumpMemories(): void {
-    this.memoryController.dumpMemories(4);
-  }
-
-  dumpState(): void {
-    console.log('state:               ', this.state);
-    console.log('pc:                  ', this.pc);
-    console.log('instruction:         ', binWord(this.instruction));
-    console.log('decoded instruction: ', this.decodedInstruction);
-    console.log('execution result:    ', hexWord(this.executionResult));
-    console.log('memory access result:', hexWord(this.memoryAccessResult));
-    console.log('registers:');
-    for (let i = 0; i < 32; i++) {
-      console.log(`    x${i}: ${hexWord(this.registers[i])} -> ${this.registers[i]})`);
-    }
+  getState(): CoreState {
+    return {
+      pipelineState:  this.state,
+      programCounter: this.pc,
+      fetchedInstruction: this.instruction,
+      decodedInstruction: this.decodedInstruction,
+      ALUResult: this.executionResult,
+      memoryAccessResult: this.memoryAccessResult,
+      registers: this.registers
+    };
   }
 
   tick(): void {

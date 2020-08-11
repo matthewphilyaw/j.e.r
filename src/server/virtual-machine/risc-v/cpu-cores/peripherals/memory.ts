@@ -14,6 +14,11 @@ export interface MemoryRegion {
   readonly: boolean;
 }
 
+export interface MemoryRegionDump {
+  regionInfo: MemoryRegion;
+  regionBuffer: ArrayBuffer;
+}
+
 export class MemoryController {
   private readonly memoryRegions: MemoryRegion[];
   private memoryBuffer: DataView;
@@ -76,8 +81,7 @@ export class MemoryController {
       throw new Error(`Can not write a word to this memory region. It must be written ${mr.accessWidthInBytes} bytes at a time`);
     }
 
-    const offset = address - mr.startAddress;
-    this.memoryBuffer.setUint32(offset, value, true);
+    this.memoryBuffer.setUint32(address, value, true);
 
     return mr.clockCyclesForWrite;
   }
@@ -111,8 +115,7 @@ export class MemoryController {
       throw new Error(`Can not read a word from this memory region. It must be read ${mr.accessWidthInBytes} bytes at a time`);
     }
 
-    const offset = address - mr.startAddress;
-    return this.memoryBuffer.getUint32(offset, true);
+    return this.memoryBuffer.getUint32(address, true);
   }
 
   dumpMemories(columns: number): void {
@@ -126,7 +129,6 @@ export class MemoryController {
         const columnValues: string[] = [];
         for (let colNum = 0; colNum < columns; colNum++) {
           const offset = address + colNum;
-          console.log(offset);
           const byte = this.memoryBuffer.getUint8(offset);
           columnValues.push(binByte(byte));
         }
@@ -136,5 +138,19 @@ export class MemoryController {
 
       console.log();
     }
+  }
+
+  getRegionDump(regionName: string): MemoryRegionDump {
+    const mr = this.memoryRegions.find(p => p.regionName === regionName);
+
+    if (!mr) {
+      throw new Error(`Can't find region name ${regionName}`);
+    }
+
+    const bufferSlice = this.memoryBuffer.buffer.slice(mr.startAddress, mr.startAddress + mr.lengthInBytes);
+    return {
+      regionInfo: mr,
+      regionBuffer: bufferSlice
+    };
   }
 }

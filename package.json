@@ -29,7 +29,7 @@
     "build-sass": "./node_modules/.bin/sass src/client/sass/main.scss public/css/main.css --style=compressed",
     "build-public": "./node_modules/.bin/shx cp -R ./src/client/public ./public/",
     "build-vm": "npm run build-server",
-    "vm": "node --inspect ./lib/server/virtual-machine/vm.js"
+    "vm": "node --inspect-brk ./lib/server/virtual-machine/vm.js"
   },
   "keywords": [
     "typescript",

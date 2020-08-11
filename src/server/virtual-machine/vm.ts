@@ -22,21 +22,17 @@ try {
   const cpu = new ProtoCore();
 
   cpu.loadProgram(ctx.programMemoryBuffer);
-  cpu.dumpMemories();
+  cpu.memoryController.dumpMemories(4);
 
   function executeFullStage(): void {
     cpu.tick();
-    cpu.dumpState();
     cpu.tick();
-    cpu.dumpState();
     cpu.tick();
-    cpu.dumpState();
     cpu.tick();
-    cpu.dumpState();
     cpu.tick();
-    cpu.dumpState();
+    cpu.getState();
 
-    cpu.dumpMemories();
+    console.log(cpu.memoryController.getRegionDump('ram'));
   }
 
   while (true) {
